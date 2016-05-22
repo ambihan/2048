@@ -9,6 +9,7 @@ import getch
 LINES = 4
 COLUMNS = 4
 SCORE = 0
+HISTORYSCORE = 0
 RANDNUM = [2, 4]
 KEYMAP = {'w': 1, 's': 2, 'a': 3, 'd': 4}
 
@@ -21,6 +22,7 @@ def displayMatrix(matrix):
     """
     os.system('clear')
     print '\nCurrent Score:', SCORE
+    print '\nHistory Highest Score:', HISTORYSCORE
     print
     sp = '+' + '-' * (8 * COLUMNS - 1) + '+'
     print sp
@@ -116,7 +118,7 @@ def produceRandomNum(matrix):
         return False
     else:
         x, y = indexList[random.randint(0, len(indexList) - 1)]
-        matrix[x][y] = RANDNUM[random.randint(0, 1)]
+        matrix[x][y] = RANDNUM[0 if random.randint(1, 100) < 90 else 1]
         return True
 
 
@@ -148,8 +150,10 @@ def run(matrix):
         displayMatrix(matrix)
         displayTips()
         if gameIsOver(matrix):
-            print '\nGame over!\n'
-            break
+            print 'Game over!'
+            global HISTORYSCORE
+            if HISTORYSCORE < SCORE:
+                HISTORYSCORE = SCORE
         while True:
             key = getch.getch()
             if key == 'r':
@@ -166,6 +170,8 @@ def init(matrix):
     :return: None
     :function: Init game matrix
     """
+    global SCORE
+    SCORE = 0
     for i in range(LINES):
         for j in range(COLUMNS):
             matrix[i][j] = 0
@@ -190,5 +196,3 @@ if __name__ == '__main__':
         matrix.append(column)
     produceRandomNum(matrix)
     run(matrix)
-
-    
