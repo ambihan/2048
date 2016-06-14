@@ -28,21 +28,21 @@ PagePank算法除了在网页排名中有重要的应用之外，也可以用于
 
 假设一个由4个网页组成的群体：A，B，C和D。如果所有页面都只链接至A，那么A的PR（PageRank）值将是B，C及D的Pagerank总和。
 
-$${\displaystyle PR(A)=PR(B)+PR(C)+PR(D)}$$
+`${\displaystyle PR(A)=PR(B)+PR(C)+PR(D)}$`
 
 继续假设B也有链接到C，并且D也有链接到包括A的3个页面。一个页面总共只有一票。所以B给每个页面半票。以同样的逻辑，D投出的票只有三分之一算到了A的PageRank上。
 
-$${\displaystyle PR(A)={\frac {PR(B)}{2}}+{\frac {PR(C)}{1}}+{\frac {PR(D)}{3}}}$$
+`${\displaystyle PR(A)={\frac {PR(B)}{2}}+{\frac {PR(C)}{1}}+{\frac {PR(D)}{3}}}$`
 
 换句话说，根据连出总数平分一个页面的PR值。
 
-$${\displaystyle PR(A)={\frac {PR(B)}{L(B)}}+{\frac {PR(C)}{L(C)}}+{\frac {PR(D)}{L(D)}}}$$
+`${\displaystyle PR(A)={\frac {PR(B)}{L(B)}}+{\frac {PR(C)}{L(C)}}+{\frac {PR(D)}{L(D)}}}$`
 
-最后，所有这些被换算为一个百分比再乘上一个系数 $${\displaystyle d}$$ 。由于“没有向外链接的页面”传递出去的PageRank会是0，所以通过数学系统给了每个页面一个最小值 $${\displaystyle (1-d)/N} $$：
+最后，所有这些被换算为一个百分比再乘上一个系数 `${\displaystyle d}$` 。由于“没有向外链接的页面”传递出去的PageRank会是0，所以通过数学系统给了每个页面一个最小值 `${\displaystyle (1-d)/N} $`：
 
-$${\displaystyle PR(A)=\left({\frac {PR(B)}{L(B)}}+{\frac {PR(C)}{L(C)}}+{\frac {PR(D)}{L(D)}}+\,\cdots \right)d+{\frac {1-d}{N}}}$$
+`${\displaystyle PR(A)=\left({\frac {PR(B)}{L(B)}}+{\frac {PR(C)}{L(C)}}+{\frac {PR(D)}{L(D)}}+\,\cdots \right)d+{\frac {1-d}{N}}}$`
 
-要注意在Sergey Brin和Lawrence Page的1998年原文中给每一个页面设定的最小值是 $${\displaystyle 1-d}$$ ，而不是这里的 $${\displaystyle (1-d)/N}$$ 。 所以**一个页面的PageRank是由其他页面的PageRank计算得到。不断的重复计算可以得到所有网页的PageRank。如果给每个网页一个随机PageRank值（非0），那么经过不断的重复计算，这些页面的PR值会趋向于稳定，也就是收敛的状态**。这就是搜索引擎使用它的原因。
+要注意在Sergey Brin和Lawrence Page的1998年原文中给每一个页面设定的最小值是 `${\displaystyle 1-d}$` ，而不是这里的 `${\displaystyle (1-d)/N}$` 。 所以**一个页面的PageRank是由其他页面的PageRank计算得到。不断的重复计算可以得到所有网页的PageRank。如果给每个网页一个随机PageRank值（非0），那么经过不断的重复计算，这些页面的PR值会趋向于稳定，也就是收敛的状态**。这就是搜索引擎使用它的原因。
 
 ---
 ### 二、PageRank改进算法
@@ -58,13 +58,13 @@ $${\displaystyle PR(A)=\left({\frac {PR(B)}{L(B)}}+{\frac {PR(C)}{L(C)}}+{\frac 
 
 考虑到实际情况，在使用PageRank算法反作弊时，做了以下2个方面的调整：
 ##### PageRank值的分配
-对于PageRank算法而言，PR值的分配是平均的，对于A->B, A->C链接关系而言，PR值分配情况是：贡献给B、C的PR值都是 $${\displaystyle PR(A)/2}$$ 。如果A输给B 3000游戏币，A输给C 6000游戏币， 则调整后的PageRank值分配情况是：贡献给B的PR值为 $${\displaystyle PR(A) \times {1}/3}$$ ， 贡献给C的PR值为 $${\displaystyle PR(A) \times {2}/3}$$ 。用TotalLoseCoin(TLC)代表输的游戏币总量，LoseCoinTo(LCT)代表输给对方的游戏币数，则A分配给X的PR值为 $${\displaystyle \frac {LCT(X)} {TLC(A)} \times PR(A)}$$ 
+对于PageRank算法而言，PR值的分配是平均的，对于A->B, A->C链接关系而言，PR值分配情况是：贡献给B、C的PR值都是`${\displaystyle PR(A)/2}$`。如果A输给B 3000游戏币，A输给C 6000游戏币， 则调整后的PageRank值分配情况是：贡献给B的PR值为`${\displaystyle PR(A) \times {1}/3}$`， 贡献给C的PR值为`${\displaystyle PR(A) \times {2}/3}$`。用TotalLoseCoin(TLC)代表输的游戏币总量，LoseCoinTo(LCT)代表输给对方的游戏币数，则A分配给X的PR值为`${\displaystyle \frac {LCT(X)} {TLC(A)} \times PR(A)}$`
 ##### PageRank值的有效传播
-PageRank算法对于PR值的传播都是100%的，即传递给所有指向节点的PR值之和等于该节点的PR值。但是，在我们的应用中，需要考虑一种情况：玩家输的游戏币远小于赢的游戏币，例如玩家A赢了10000000游戏币，输了1000游戏币，这时候把A的PR值全部贡献出去显然不合理，用TotalWinCoin(TWC)，TotalLoseCoin(TLC)分别代表赢和输的游戏币总量，将 $${\displaystyle \frac {TLC(A)} {Max(TWC(A), TLC(A))} \times PR(A)}$$ 作为传递的有效值更合理。
+PageRank算法对于PR值的传播都是100%的，即传递给所有指向节点的PR值之和等于该节点的PR值。但是，在我们的应用中，需要考虑一种情况：玩家输的游戏币远小于赢的游戏币，例如玩家A赢了10000000游戏币，输了1000游戏币，这时候把A的PR值全部贡献出去显然不合理，用TotalWinCoin(TWC)，TotalLoseCoin(TLC)分别代表赢和输的游戏币总量，将 `${\displaystyle \frac {TLC(A)} {Max(TWC(A), TLC(A))} \times PR(A)}$`作为传递的有效值更合理。
 ##### 进一步优化
-结合第三个假设，为了“稀释”正常骨灰玩家的PR传播值，我们在此基础上，最终将 $${\displaystyle \frac {TLC(A)} {Max(TWC(A), TLC(A))\times L(A)} \times PR(A)}$$ 作为传递的有效值，然后再按照 $${\displaystyle \frac {LCT(X)} {TLC(A)}}$$ 比例分配。
+结合第三个假设，为了“稀释”正常骨灰玩家的PR传播值，我们在此基础上，最终将`${\displaystyle \frac {TLC(A)} {Max(TWC(A), TLC(A))\times L(A)} \times PR(A)}$`作为传递的有效值，然后再按照`${\displaystyle \frac {LCT(X)} {TLC(A)}}$`比例分配。
 ##### 最终得到的PageRank算法公式为：
-$${\displaystyle PR(X) = \left(\frac {LCT(X) \times PR(A)} {Max(TWC(A), TLC(A))\times L(A)} + \frac {LCT(X) \times PR(B)} {Max(TWC(B), TLC(B))\times L(B)} + \frac {LCT(X) \times PR(C)} {Max(TWC(C), TLC(C))\times L(C)} + \,\cdots\right) \times d + \left( 1-d\right)}$$
+`${\displaystyle PR(X) = \left(\frac {LCT(X) \times PR(A)} {Max(TWC(A), TLC(A))\times L(A)} + \frac {LCT(X) \times PR(B)} {Max(TWC(B), TLC(B))\times L(B)} + \frac {LCT(X) \times PR(C)} {Max(TWC(C), TLC(C))\times L(C)} + \,\cdots\right) \times d + \left( 1-d\right)}$`
 
 ---
 ### 三、改进算法在游戏反作弊中的应用
